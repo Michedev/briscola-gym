@@ -1,6 +1,6 @@
-from base_player import BasePlayer
+from briscola_gym.player.base_player import BasePlayer
 from random import randint, random
-from game_rules import select_winner
+from briscola_gym.game_rules import select_winner
 
 
 class EpsGreedyPlayer(BasePlayer):

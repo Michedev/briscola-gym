@@ -11,6 +11,7 @@ class Seed:
 
     @classmethod
     def get_seed(cls, i: Union[str, int]):
+        assert 0 <= i <= 3, i
         if isinstance(i, str):
             return cls.__dict__[i.capitalize()]
         if i == 0:

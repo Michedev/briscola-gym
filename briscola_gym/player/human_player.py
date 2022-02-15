@@ -1,4 +1,4 @@
-from player.base_player import BasePlayer
+from briscola_gym.player.base_player import BasePlayer
 
 
 class HumanPlayer(BasePlayer):
