@@ -25,7 +25,8 @@ class BriscolaRandomPlayer(gym.Env):
             'hand_size': spaces.Discrete(3),
             'hand': spaces.Tuple([card_space, card_space, card_space]),
             'table': spaces.Tuple([card_space, card_space]),
-            'discarded': spaces.Tuple([card_space] * 40),
+            'my_discarded': spaces.Tuple([card_space] * 40),
+            'other_discarded': spaces.Tuple([card_space] * 40),
             'turn': spaces.Discrete(40),
             'briscola': card_space,
             'order': spaces.Discrete(1)
@@ -45,12 +46,21 @@ class BriscolaRandomPlayer(gym.Env):
             self.table.append(other_card)
         self.__logger.info(f'Table: {self.table}')
         i_winner = select_winner(self.table, self.briscola)
+        reward = self._state_update_after_winner(i_winner)
+        self._draw_phase()
+        if self.turn_my_player == 1:
+            other_card = self._other_player.discard_card()
+            self.table.append(other_card)
+        return self.public_state().as_dict(), reward, self.is_finish(), dict()
+
+    def _state_update_after_winner(self, i_winner):
         self.__logger.info(f'Turn Winner is {self.players[i_winner].name}')
         self.players[0], self.players[1] = self.players[i_winner], self.players[1 - i_winner]
         self.points[0], self.points[1] = self.points[i_winner], self.points[1 - i_winner]
         reward = gained_points = sum(values_points[c.value] for c in self.table)
         self.points[0] += gained_points
-        self.discarded += self.table
+        self.my_discarded.append(self.table[self.turn_my_player])
+        self.other_discarded.append(self.table[1 - self.turn_my_player])
         if i_winner == self.turn_my_player:
             self.turn_my_player = 0
         else:
@@ -61,11 +71,7 @@ class BriscolaRandomPlayer(gym.Env):
         self.table = []
         self.__logger.info(f'Winner gained {gained_points} points')
         self.__logger.info(f'Current table points: {self.points}')
-        self._draw_phase()
-        if self.turn_my_player == 1:
-            other_card = self._other_player.discard_card()
-            self.table.append(other_card)
-        return self.public_state().as_dict(), reward, self.is_finish(), dict()
+        return reward
 
     def _draw_phase(self):
         if not self.deck.is_empty():
@@ -81,7 +87,7 @@ class BriscolaRandomPlayer(gym.Env):
 
     def public_state(self):
         return PublicState(self.points, self._my_player.hand,
-                           self.table, self.discarded,
+                           self.table, self.my_discarded, self.other_discarded,
                            self.turn, self.briscola, self.turn_my_player)
 
 
@@ -94,7 +100,8 @@ class BriscolaRandomPlayer(gym.Env):
         self._my_player: BasePlayer = HumanPlayer()
         self._other_player: BasePlayer = PseudoRandomPlayer()
         self.deck = Deck()
-        self.discarded = []
+        self.my_discarded = []
+        self.other_discarded = []
         self.points = [0, 0]
         self.turn_my_player = randint(0, 1)
         self.players = [self._my_player, self._other_player]

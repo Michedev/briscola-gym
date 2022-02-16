@@ -5,8 +5,9 @@ description = ""
 authors = ["Mikedev <mdv1994@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.8"
 gym = "^0.21.0"
+numpy = "^1.21.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
