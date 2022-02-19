@@ -9,4 +9,4 @@ class PseudoRandomPlayer(BasePlayer):
         self.name = 'RandomPlayer'
 
     def choose_card(self) -> int:
-        return randint(0, len(self.hand) - 1)
+        return randint(0, len(self.hand) - 1) if len(self.hand) > 1 else 0

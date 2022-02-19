@@ -14,7 +14,7 @@ class Card:
         assert 0 <= self.seed <= 4, self.seed
         self.points = values_points[self.value]
 
-    def vector(self):
+    def vector(self) -> tuple:
         return self.value, self.seed
 
 

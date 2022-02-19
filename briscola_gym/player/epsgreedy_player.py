@@ -12,7 +12,7 @@ class EpsGreedyPlayer(BasePlayer):
 
     def choose_card(self) -> int:
         if self.epsilon > random():
-            return randint(0, len(self.hand)-1)
+            return randint(0, len(self.hand)-1) if len(self.hand) > 1 else 0
         return self.greedy_action()
 
     def greedy_action(self):
