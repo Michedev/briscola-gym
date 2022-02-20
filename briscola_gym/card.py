@@ -13,6 +13,7 @@ class Card:
         assert 0 <= self.value <= 10, self.value
         assert 0 <= self.seed <= 4, self.seed
         self.points = values_points[self.value]
+        self.id = self.seed * 10 + self.value
 
     def vector(self) -> tuple:
         return self.value, self.seed

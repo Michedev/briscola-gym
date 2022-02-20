@@ -1,3 +1,5 @@
+import itertools
+
 from briscola_gym.card import Card
 from briscola_gym.game import BriscolaRandomPlayer
 
@@ -69,7 +71,18 @@ def test_100_games():
         while not done:
             state, reward, done, _ = game.step(0)
             assert (state['my_points'] + state['other_points']) <= 120
-            actual_num_cards = len([x for x in state['my_discarded'] if x != (0, 0)]) + \
-                               len([x for x in state['other_discarded'] if x != (0, 0)]) + (
-                                       len(state['hand']) + len(state['table'])) * 2
-            assert actual_num_cards <= 50, actual_num_cards
+            actual_num_cards = state['remaining_deck_cards'] + state['hand_size'] \
+                               + state['other_hand_size'] \
+                               + len([x for x in state['table'] if x != (0, 0)]) \
+                               + len([x for x in state['my_discarded'] if x != (0, 0)]) \
+                               + len([x for x in state['other_discarded'] if x != (0, 0)])
+            assert actual_num_cards == 40, actual_num_cards
+
+            ids = set()
+            for c in itertools.chain(game.my_player.hand,
+                                     game.other_player.hand,
+                                     game.my_discarded,
+                                     game.other_discarded,
+                                     game.deck.cards):
+                assert c.id not in ids
+                ids.add(c.id)

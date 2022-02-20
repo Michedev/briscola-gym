@@ -24,6 +24,8 @@ class BriscolaRandomPlayer(gym.Env):
             'my_points': spaces.Discrete(120),
             'other_points': spaces.Discrete(120),
             'hand_size': spaces.Discrete(3),
+            'other_hand_size': spaces.Discrete(3),
+            'remaining_deck_cards': spaces.Discrete(40),
             'hand': spaces.Tuple([card_space, card_space, card_space]),
             'table': spaces.Tuple([card_space, card_space]),
             'my_discarded': spaces.Tuple([card_space] * 40),
@@ -80,10 +82,7 @@ class BriscolaRandomPlayer(gym.Env):
     def _draw_phase(self):
         if not self.deck.is_empty():
             c1 = self.deck.draw()
-            if self.deck.is_empty():
-                c2 = self.briscola
-            else:
-                c2 = self.deck.draw()
+            c2 = self.deck.draw()
             if self.turn_my_player == 0:
                 c_my_player = c1
                 c_other_player = c2
@@ -95,9 +94,9 @@ class BriscolaRandomPlayer(gym.Env):
 
     def public_state(self):
         return PublicState(self.my_points, self.other_points, self.my_player.hand,
+                           len(self.other_player.hand), len(self.deck.cards),
                            self.table, self.my_discarded, self.other_discarded,
                            self.turn, self.briscola, self.turn_my_player)
-
 
     def is_finish(self):
         return any(p > 60 for p in self.points) or \
@@ -121,10 +120,10 @@ class BriscolaRandomPlayer(gym.Env):
             self.my_player.hand.append(self.deck.draw())
         for _ in range(3):
             self.other_player.hand.append(self.deck.draw())
+        self.deck.cards.append(self.briscola)
         if self.turn_my_player == 1:
             other_card = self.other_player.discard_card()
             self.table.append(other_card)
-
 
     def render(self, mode="human"):
         pass
