@@ -36,6 +36,10 @@ def test_single_step_first_my_player():
     game.my_player.hand = [Card(1, game.briscola.seed), Card(1, game.briscola.seed), Card(1, game.briscola.seed)]
     game.other_player.hand = [Card(3, game.briscola.seed), Card(3, game.briscola.seed), Card(3, game.briscola.seed)]
 
+    _check_first_three_turns_max_briscola_my_player(game)
+
+
+def _check_first_three_turns_max_briscola_my_player(game):
     state, reward, done, _ = game.step(0)
     assert not done
     assert reward == 21
@@ -43,6 +47,15 @@ def test_single_step_first_my_player():
     assert game.other_points == 0
     assert state['my_discarded'] == [(1, game.briscola.seed)] + [(0, 0)] * 39
     assert state['other_discarded'] == [(3, game.briscola.seed)] + [(0, 0)] * 39
+    state, reward, done, _ = game.step(0)
+    assert reward >= 11
+    assert game.my_points >= 32
+    assert game.other_points == 0
+    assert game.turn_my_player == 0
+    state, reward, done, _ = game.step(0)
+    assert reward >= 11
+    assert game.my_points >= 43
+    assert game.other_points == 0
 
 
 def test_single_step_first_other():
@@ -52,13 +65,10 @@ def test_single_step_first_other():
     game.my_player.hand = [Card(1, game.briscola.seed), Card(1, game.briscola.seed), Card(1, game.briscola.seed)]
     game.other_player.hand = [Card(3, game.briscola.seed), Card(3, game.briscola.seed)]
     game.table = [Card(3, game.briscola.seed)]
-    state, reward, done, _ = game.step(0)
-    assert not done
-    assert reward == 21
-    assert game.my_points == 21
-    assert game.other_points == 0
-    assert state['my_discarded'] == [(1, game.briscola.seed)] + [(0, 0)] * 39
-    assert state['other_discarded'] == [(3, game.briscola.seed)] + [(0, 0)] * 39
+
+    _check_first_three_turns_max_briscola_my_player(game)
+
+
 
 
 def test_100_games():
