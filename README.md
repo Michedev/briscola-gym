@@ -82,3 +82,29 @@ class EpsGreedyPlayer(BasePlayer):
 ```
 Note: if your player has an internal state for the current game,
 remember to overwrite the method ```reset_player()```
+
+
+## State
+
+### Card representation
+
+Each card is represented by a triple (value, seed, points) where
+- value is the card represented number, in range [1, 10]
+- Seed is one of the four seeds, represented by a number in range [1, 4]
+- points is the corresponding points carried by the card, in range [0, 11]
+
+The tuple (0,0,0) is the _null_ cards. 
+### State elements
+
+- my_points: int  | Player points, in range [0, 120]
+- other_points: int | Adversary player points, in range[0, 120]
+- hand: List[Card]  | An array of three cards, where each card is represented as described above. In case 
+the cards are less than three, there will be _null_ cards.
+- other_hand_size: int | Number of cards in the hand of the enemy
+- remaining_deck_cards: int | Number of cards remaining in the deck
+- table: List[Card] | Cards onto the table.
+- my_discarded: List[Card]  | The list of discarded card by Player. It has length 40
+- other_discarded: List[Card] | The list of discarded cards by the adversary. It has length 40
+- turn: int  | The current turn
+- briscola: Card | The briscola card
+- my_turn_player: int | Tells if, in this turn, we are the first or second player. In range [0, 1]

@@ -22,7 +22,7 @@ class BriscolaCustomEnemyPlayer(gym.Env):
         self.my_player : BasePlayer = HumanPlayer()
         self.other_player = other_player
         self.reward_range = (-22, 22)
-        card_space = spaces.Tuple((spaces.Discrete(11), spaces.Discrete(5)))  # (value, seed)
+        card_space = spaces.Tuple((spaces.Discrete(11), spaces.Discrete(5), spaces.Discrete(12)))  # (value, seed, points)
         self.observation_space = spaces.Dict({
             'my_points': spaces.Discrete(120),
             'other_points': spaces.Discrete(120),

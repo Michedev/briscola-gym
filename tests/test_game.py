@@ -1,6 +1,6 @@
 import itertools
 
-from briscola_gym.card import Card
+from briscola_gym.card import Card, NULLCARD_VECTOR
 from briscola_gym.game import BriscolaRandomPlayer
 
 
@@ -45,8 +45,8 @@ def _check_first_three_turns_max_briscola_my_player(game):
     assert reward == 21
     assert game.my_points == 21
     assert game.other_points == 0
-    assert state['my_discarded'] == [(1, game.briscola.seed)] + [(0, 0)] * 39
-    assert state['other_discarded'] == [(3, game.briscola.seed)] + [(0, 0)] * 39
+    assert state['my_discarded'] == [(1, game.briscola.seed, 11)] + [(0, 0, 0)] * 39
+    assert state['other_discarded'] == [(3, game.briscola.seed, 10)] + [(0, 0, 0)] * 39
     state, reward, done, _ = game.step(0)
     assert reward >= 11
     assert game.my_points >= 32
@@ -81,9 +81,9 @@ def test_100_games():
             assert (state['my_points'] + state['other_points']) <= 120
             actual_num_cards = state['remaining_deck_cards'] + state['hand_size'] \
                                + state['other_hand_size'] \
-                               + len([x for x in state['table'] if x != (0, 0)]) \
-                               + len([x for x in state['my_discarded'] if x != (0, 0)]) \
-                               + len([x for x in state['other_discarded'] if x != (0, 0)])
+                               + len([x for x in state['table'] if x != NULLCARD_VECTOR]) \
+                               + len([x for x in state['my_discarded'] if x != NULLCARD_VECTOR]) \
+                               + len([x for x in state['other_discarded'] if x != NULLCARD_VECTOR])
             assert actual_num_cards == 40, actual_num_cards
 
             ids = set()

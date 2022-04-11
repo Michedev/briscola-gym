@@ -16,7 +16,10 @@ class Card:
         self.id = self.seed * 10 + self.value
 
     def vector(self) -> tuple:
-        return self.value, self.seed
+        return self.value, self.seed, self.points
+
+
+NULLCARD_VECTOR = (0, 0, 0)
 
 
 class Deck:

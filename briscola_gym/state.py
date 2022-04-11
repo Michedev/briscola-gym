@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from typing import Tuple, List
 
-from briscola_gym.card import Card
+from briscola_gym.card import Card, NULLCARD_VECTOR
 
 
 def pad_card_vector(lst: list, max_len: int):
     if len(lst) < max_len:
         for _ in range(max_len - len(lst)):
-            lst.append((0, 0))
+            lst.append(NULLCARD_VECTOR)
     return lst
 
 
