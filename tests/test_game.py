@@ -69,8 +69,6 @@ def test_single_step_first_other():
     _check_first_three_turns_max_briscola_my_player(game)
 
 
-
-
 def test_100_games():
     import random
     random.seed(100)

@@ -4,6 +4,7 @@ from random import randint
 from briscola_gym.player.base_player import BasePlayer
 from gym import spaces
 
+from briscola_gym.player.epsgreedy_player import EpsGreedyPlayer
 from briscola_gym.state import PublicState
 
 from briscola_gym.game_rules import select_winner
@@ -14,10 +15,12 @@ from briscola_gym.player.random_player import PseudoRandomPlayer
 from briscola_gym.player.human_player import HumanPlayer
 
 
-class BriscolaRandomPlayer(gym.Env):
+class BriscolaCustomEnemyPlayer(gym.Env):
 
-    def __init__(self):
+    def __init__(self, other_player: BasePlayer):
         self.action_space = spaces.Discrete(3)  # drop i-th card
+        self.my_player : BasePlayer = HumanPlayer()
+        self.other_player = other_player
         self.reward_range = (-22, 22)
         card_space = spaces.Tuple((spaces.Discrete(11), spaces.Discrete(5)))  # (value, seed)
         self.observation_space = spaces.Dict({
@@ -104,8 +107,8 @@ class BriscolaRandomPlayer(gym.Env):
 
     def reset(self):
         self.turn = 0
-        self.my_player: BasePlayer = HumanPlayer()
-        self.other_player: BasePlayer = PseudoRandomPlayer()
+        self.my_player.reset_player()
+        self.other_player.reset_player()
         self.deck = Deck()
         self.my_discarded = []
         self.table = []
@@ -127,3 +130,15 @@ class BriscolaRandomPlayer(gym.Env):
 
     def render(self, mode="human"):
         pass
+
+
+class BriscolaRandomPlayer(BriscolaCustomEnemyPlayer):
+
+    def __init__(self):
+        super(BriscolaRandomPlayer, self).__init__(PseudoRandomPlayer())
+
+
+class BriscolaEpsGreedyPlayer(BriscolaCustomEnemyPlayer):
+
+    def __init__(self, eps: float = 0.2):
+        super().__init__(EpsGreedyPlayer(eps))
